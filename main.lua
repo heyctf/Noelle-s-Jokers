@@ -69,16 +69,6 @@ SMODS.Joker{
     end,
 }
 
-SMODS.Joker:take_ownership('joker',
-    {
-	cost = 5,
-	calculate = function(self, card, context)
-
-	end
-    },
-    true
-)
-
 SMODS.Joker{
 	key = 'refrigerador',
 	loc_txt = {
@@ -191,6 +181,69 @@ SMODS.Joker{
 	in_pool = function(self)
         return true
     end,
+}
+
+function reset_pizza_palo()
+	if not G.GAME.noelle then
+		G.GAME.noelle = {}
+	end
+	G.GAME.noelle.pizza_suit = 'Spades'
+    local valid_idol_cards = {}
+	if G.STAGE == G.STAGES.RUN then
+		for k, v in ipairs(G.playing_cards) do
+			if v.ability.effect ~= 'Stone Card' then
+				valid_idol_cards[#valid_idol_cards+1] = v
+			end
+		end
+		if valid_idol_cards[1] then 
+			local idol_card = pseudorandom_element(valid_idol_cards, pseudoseed('idol'..G.GAME.round_resets.ante))
+			G.GAME.noelle.pizza_suit = idol_card.base.suit
+		end
+	end
+end
+
+SMODS.Joker{
+	key = 'pizza_4_sabores',
+	loc_txt = {
+		name = 'Pizza 4 sabores',
+		text = {
+			'Reactiva una vez todas las cartas',
+			'del palo {V:1}#2#{} jugadas',
+			'El palo cambia cada ronda'
+		}
+	},
+	cost = 6,
+	rarity = 2,
+	blueprint_compat = true,
+	eternal_compat = true,
+	atlas = 'Jokers',
+	pos = {x=2,y=0},
+	config = {extra = {extra=1}},
+	loc_vars = function(self,info_queue,center)
+		return {vars = {center.ability.extra, localize(G.GAME.noelle.pizza_suit, 'suits_singular'), colours = {G.C.SUITS[G.GAME.noelle.pizza_suit]}}}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		reset_pizza_palo()
+	end,
+	set_ability = function(self, card, initial, delay_sprites)
+		reset_pizza_palo()
+	end,
+	calculate = function(self,card,context)
+		if context.repetition then
+			if context.cardarea == G.play then
+				if context.other_card:is_suit(G.GAME.noelle.pizza_suit) then
+					return {
+						message = localize('k_again_ex'),
+						repetitions = 1,
+						card = card
+					}
+				end
+			end
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			reset_pizza_palo()
+		end
+	end,
 }
 
 ----------------------------------------------
