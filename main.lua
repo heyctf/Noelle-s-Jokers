@@ -2,7 +2,7 @@
 --- MOD_NAME: Noelle's Jokers
 --- MOD_ID: NOELLESJOKERS
 --- MOD_AUTHOR: [heyctf]
---- MOD_DESCRIPTION: Blee :p
+--- MOD_DESCRIPTION: Mod basado en las adiciones creadas por Noelle_owo_, arte creado por MorbZeno
 --- PREFIX: noelle
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -14,24 +14,45 @@ SMODS.Atlas{
 	py = 95
 }
 
+SMODS.Atlas{
+	key = 'lc_cards',
+	path = '8BitDeck.png',
+	px = 71,
+	py = 95
+}
+
+SMODS.Atlas{
+	key = 'lc_ui',
+	path = 'ui_assets.png',
+	px = 18,
+	py = 18
+}
+
+SMODS.Atlas{
+	key = 'modicon',
+	path = 'ui_assets.png',
+	px = 18,
+	py = 18
+}
+
+--local palo_tostado = SMODS.Suit{
+--	key = 'Prehistoria',
+--	card_key = 'PREHISTORIA',
+--	pos = {y=0},
+--	ui_pos = {x=0,y=0},
+--    lc_atlas = 'lc_cards',
+--    lc_ui_atlas = 'lc_ui',
+--	lc_colour = HEX('67A347'),
+--	in_pool = false
+--}
+
 SMODS.Joker{
 	key = 'gato_negro',
-	loc_txt = {
-		name = 'Gato negro',
-		text = { 
-		--Sé que está hardcodeado pero no me quiero meter todavía en la localización y esa cosa, solo quería hacerlo rápido
-		--Lo cual es chistoso porque me tardo muchas más horas que pensaba xd
-			'Todas las {C:green,E:1,S:1.1}probabilidades',
-			'empeoran: {C:green}1 en 2{C:inactive} -> {C:green}1 en 4{C:inactive}',
-			'Cada que una carta de la {C:attention}suerte{}',
-			'no se active, obtiene {C:chips}+#2#{} fichas',
-			'{C:inactive}(Actual {C:chips}+#1#{} {C:inactive}fichas)'
-		}
-	},
 	cost = 3,
 	rarity = 1,
 	blueprint_compat = true,
 	eternal_compat = true,
+	perishable_compat = true,
 	atlas = 'Jokers',
 	pos = {x=0,y=0},
 	config = {extra = {chips = 0, chip_mod = 5, plus_odds = 2}},
@@ -71,19 +92,11 @@ SMODS.Joker{
 
 SMODS.Joker{
 	key = 'refrigerador',
-	loc_txt = {
-		name = 'Refrigerador',
-		text = {
-			'Los comodines {C:attention}perecederos',
-			'y que {C:attention}decrecen con su uso',
-			'{C:inactive,s:0.8}(ej. Palomitas de maíz, Helado, etc.)',
-			'duran el {C:attention}doble'
-		}
-	},
 	cost = 5,
 	rarity = 2,
 	blueprint_compat = true,
 	eternal_compat = true,
+	perishable_compat = true,
 	atlas = 'Jokers',
 	pos = {x=1,y=0},
 	config = {extra = {mano_par=false,descartada_par=false}},
@@ -137,7 +150,7 @@ SMODS.Joker{
 			if context.blueprint then
 				for k, v in ipairs(G.jokers.cards) do
 					if v.ability.name == 'Ice Cream' then
-						v.ability.extra.chips = v.ability.extra.chips + 2.5
+						v.ability.extra.chips = v.ability.extra.chips + v.ability.extra.chip_mod
 						return {
 							message = '¡Conservado!',
 							colour = G.C.FILTER
@@ -150,10 +163,10 @@ SMODS.Joker{
 			local activado = false
 			for k, v in ipairs(G.jokers.cards) do
 				if v.ability.name == 'Popcorn' then
-					v.ability.mult = v.ability.mult + 2
+					v.ability.mult = v.ability.mult + v.ability.extra
 				end
 				if v.ability.name == 'Turtle Bean' then
-					v.ability.extra.h_size = v.ability.extra.h_size + 0.5
+					v.ability.extra.h_size = v.ability.extra.h_size + v.ability.extra.h_mod
 				end
 				if v.ability.name == 'Popcorn' or v.ability.name == 'Turtle Bean' then
 					activado = true
@@ -204,26 +217,16 @@ end
 
 SMODS.Joker{
 	key = 'pizza_4_sabores',
-	loc_txt = {
-		name = 'Pizza 4 sabores',
-		text = {
-			'Reactiva una vez todas las cartas',
-			'del palo {V:1}#2#{} jugadas',
-			'El palo cambia cada ronda'
-		}
-	},
 	cost = 6,
 	rarity = 2,
 	blueprint_compat = true,
 	eternal_compat = true,
+	perishable_compat = true,
 	atlas = 'Jokers',
 	pos = {x=2,y=0},
-	config = {extra = {extra=1}},
+	config = {extra = {retrigger=1}},
 	loc_vars = function(self,info_queue,center)
 		return {vars = {center.ability.extra, localize(G.GAME.noelle.pizza_suit, 'suits_singular'), colours = {G.C.SUITS[G.GAME.noelle.pizza_suit]}}}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		reset_pizza_palo()
 	end,
 	set_ability = function(self, card, initial, delay_sprites)
 		reset_pizza_palo()
@@ -234,7 +237,7 @@ SMODS.Joker{
 				if context.other_card:is_suit(G.GAME.noelle.pizza_suit) then
 					return {
 						message = localize('k_again_ex'),
-						repetitions = 1,
+						repetitions = card.ability.extra.retrigger,
 						card = card
 					}
 				end
@@ -244,6 +247,59 @@ SMODS.Joker{
 			reset_pizza_palo()
 		end
 	end,
+	in_pool = function(self)
+        return true
+    end,
+}
+
+SMODS.Joker{
+	key = 'aspiradora',
+	cost = 6,
+	rarity = 2,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = 'Jokers',
+	pos = {x=2,y=0},
+	config = {extra = {extra=1}},
+	loc_vars = function(self,info_queue,center)
+		return {vars = {center.ability.extra, localize(G.GAME.noelle.pizza_suit, 'suits_singular'), colours = {G.C.SUITS[G.GAME.noelle.pizza_suit]}}}
+	end,
+	calculate = function(self,card,context)
+		local comodin_selecc = nil
+		if context.end_of_round and G.GAME.blind.boss then
+			if context.cardarea == G.jokers then
+				if #G.jokers.cards > 0 then
+					local comodines = {}
+					for k, v in pairs(G.jokers.cards) do
+						if not v.gone and v ~= card and (v.ability.eternal or v.ability.perishable or v.ability.rental) then
+							table.insert(comodines,v)
+						end
+					end
+					if #comodines > 0 then
+						comodin_selecc = pseudorandom_element(comodines, pseudoseed('aspiradora'))
+						if comodin_selecc.ability.eternal or 0 then
+							comodin_selecc:set_eternal(false)
+						else
+							if comodin_selecc.ability.perishable or 0 then
+								comodin_selecc:set_perishable(false)
+							end
+						end
+						if comodin_selecc.ability.rental or 0 then
+							comodin_selecc:set_rental(false)
+						end
+						if not comodin_selecc.edition then
+							local edicion = poll_edition('aspirado', nil, false, true)
+							comodin_selecc:set_edition(edicion,true)
+						end
+					end
+				end
+			end
+		end
+	end,
+	in_pool = function(self)
+        return true
+    end,
 }
 
 ----------------------------------------------
