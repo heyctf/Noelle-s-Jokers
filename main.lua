@@ -197,20 +197,18 @@ SMODS.Joker{
 }
 
 function reset_pizza_palo()
-	if not G.GAME.noelle then
-		G.GAME.noelle = {}
-	end
+	if not G.GAME.noelle then G.GAME.noelle = {} end
 	G.GAME.noelle.pizza_suit = 'Spades'
-    local valid_idol_cards = {}
+    local cartas_validas = {}
 	if G.STAGE == G.STAGES.RUN then
 		for k, v in ipairs(G.playing_cards) do
 			if v.ability.effect ~= 'Stone Card' then
-				valid_idol_cards[#valid_idol_cards+1] = v
+				cartas_validas[#cartas_validas+1] = v
 			end
 		end
-		if valid_idol_cards[1] then 
-			local idol_card = pseudorandom_element(valid_idol_cards, pseudoseed('idol'..G.GAME.round_resets.ante))
-			G.GAME.noelle.pizza_suit = idol_card.base.suit
+		if cartas_validas[1] then 
+			local carta = pseudorandom_element(cartas_validas, pseudoseed('pizza'..G.GAME.round_resets.ante))
+			G.GAME.noelle.pizza_suit = carta.base.suit
 		end
 	end
 end
@@ -226,7 +224,7 @@ SMODS.Joker{
 	pos = {x=2,y=0},
 	config = {extra = {retrigger=1}},
 	loc_vars = function(self,info_queue,center)
-		return {vars = {center.ability.extra, localize(G.GAME.noelle.pizza_suit, 'suits_singular'), colours = {G.C.SUITS[G.GAME.noelle.pizza_suit]}}}
+		return {vars = {localize(G.GAME.noelle.pizza_suit, 'suits_singular'), colours = {G.C.SUITS[G.GAME.noelle.pizza_suit]}}}
 	end,
 	set_ability = function(self, card, initial, delay_sprites)
 		reset_pizza_palo()
@@ -243,7 +241,7 @@ SMODS.Joker{
 				end
 			end
 		end
-		if context.end_of_round and context.cardarea == G.jokers then
+		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			reset_pizza_palo()
 		end
 	end,
@@ -252,46 +250,100 @@ SMODS.Joker{
     end,
 }
 
+--creo que empezaré a poner comentarios
+--fiorela es una boba
+--tú tambien
+function cargar_mayorpalo()
+	if not G.GAME.noelle then G.GAME.noelle = {} end
+	G.GAME.noelle.mayorpalo = 'Random'
+	local empatePalos = false
+	local maxPalo = nil
+	local maxCant = 0
+    local tabla_palos = {}
+	if G.STAGE == G.STAGES.RUN then
+		for k, v in ipairs(G.playing_cards) do
+			local palo = v.base.suit
+			tabla_palos[palo] = (tabla_palos[palo] or 0) + 1 --usa el palo para sumar la cantidad y lo crea sino... lua es curioso
+			if tabla_palos[palo] > maxCant then
+				maxCant = tabla_palos[palo]
+				maxPalo = palo
+				empatePalos = false
+			--este tipo de problemas recuerdo hacer mucho en fundamentos de progra
+			--pero estoy muy acostumbrado a c++
+			elseif palo ~= maxPalo and tabla_palos[palo] == maxCant then --por que es ~= ... grr // aca se chequea si otro palo tiene la misma cantidad que el max actual
+				empatePalos = true
+			end
+		end
+		
+		if empatePalos then
+			G.GAME.noelle.mayorpalo = 'Random'
+		else
+			G.GAME.noelle.mayorpalo = maxPalo
+		end
+	end
+end
+
+--me gusta mucho la idea de este comodín :p
+
 SMODS.Joker{
-	key = 'aspiradora',
-	cost = 6,
-	rarity = 2,
-	blueprint_compat = true,
+	key = 'pintor',
+	cost = 8,
+	rarity = 3,
+	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
 	atlas = 'Jokers',
-	pos = {x=2,y=0},
-	config = {extra = {extra=1}},
+	pos = {x=3,y=0},
+	config = {extra = {paloSelecc = 'random_suit'}},
 	loc_vars = function(self,info_queue,center)
-		return {vars = {center.ability.extra, localize(G.GAME.noelle.pizza_suit, 'suits_singular'), colours = {G.C.SUITS[G.GAME.noelle.pizza_suit]}}}
+		return {vars = {center.ability.extra.paloSelecc, colours = {G.C.SUITS[G.GAME.noelle.mayorpalo]}}}
+	end,
+	--espero no sea malo en rendimiento
+	--o sea dudo que afecte tanto pero que sea medio malo en rendimiento
+	--nose
+	
+	--tengo ideas de como hacerlo más simple pero,, lo dejaré así xd
+	update = function(self,card,dt)
+		if (G.STAGE == G.STAGES.RUN) then
+			cargar_mayorpalo()
+		else
+			G.GAME.noelle.mayorpalo = 'Random'
+		end
+		
+		if G.GAME.noelle.mayorpalo == 'Random' then
+			card.ability.extra.paloSelecc = localize('random_suit') --creo que está bien que use más el localize, sé que probablemente no llegue a tanto este mod en otros paises pero bueno
+		else
+			card.ability.extra.paloSelecc = localize(G.GAME.noelle.mayorpalo, 'suits_singular')
+		end
 	end,
 	calculate = function(self,card,context)
-		local comodin_selecc = nil
-		if context.end_of_round and G.GAME.blind.boss then
-			if context.cardarea == G.jokers then
-				if #G.jokers.cards > 0 then
-					local comodines = {}
-					for k, v in pairs(G.jokers.cards) do
-						if not v.gone and v ~= card and (v.ability.eternal or v.ability.perishable or v.ability.rental) then
-							table.insert(comodines,v)
-						end
-					end
-					if #comodines > 0 then
-						comodin_selecc = pseudorandom_element(comodines, pseudoseed('aspiradora'))
-						if comodin_selecc.ability.eternal or 0 then
-							comodin_selecc:set_eternal(false)
-						else
-							if comodin_selecc.ability.perishable or 0 then
-								comodin_selecc:set_perishable(false)
+		if context.evaluate_poker_hand and not context.blueprint then
+			if next(context.poker_hands['Straight']) then
+				return {
+					replace_scoring_name = 'Straight Flush',
+				}
+			end
+		end
+		if context.cardarea == G.jokers and not context.blueprint then
+			if context.before and next(context.poker_hands['Straight']) then
+				if context.scoring_hand then
+					delay(0.02)
+					local paloACambiar = nil
+					if (G.GAME.noelle.mayorpalo == 'Random') then
+						local cartas_validas = {}
+						for k, v in ipairs(G.playing_cards) do
+							if v.ability.effect ~= 'Stone Card' then --nota para yo del futuro: qué pasa si solo tienes una carta de piedra?
+								cartas_validas[#cartas_validas+1] = v
 							end
 						end
-						if comodin_selecc.ability.rental or 0 then
-							comodin_selecc:set_rental(false)
-						end
-						if not comodin_selecc.edition then
-							local edicion = poll_edition('aspirado', nil, false, true)
-							comodin_selecc:set_edition(edicion,true)
-						end
+						local carta = pseudorandom_element(cartas_validas, pseudoseed('pintor'..G.GAME.round_resets.ante))
+						paloACambiar = carta.base.suit
+					else
+						paloACambiar = G.GAME.noelle.mayorpalo
+					end
+					for k, v in pairs(context.scoring_hand) do
+						v:juice_up(0.3, 0.5)
+						v:change_suit(paloACambiar)
 					end
 				end
 			end
@@ -301,6 +353,103 @@ SMODS.Joker{
         return true
     end,
 }
+
+function esCiegaQueActiva()
+	local tabla_ciegas = {"The Window","The Head","The Club","The Goad","The Plant","The Pillar","The Flint","The Eye","The Mouth","The Psychic","The Arm","The Ox","Verdant Leaf"}
+	for k, v in ipairs(tabla_ciegas) do
+		if v == G.GAME.blind.name then
+			return true
+		end
+	end
+end
+
+SMODS.Joker{
+	key = 'robocop',
+	cost = 6,
+	rarity = 2,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = 'Jokers',
+	pos = {x=4,y=0},
+	config = {extra = {chips = 20, chip_mod = 50}},
+	loc_vars = function(self,info_queue,center)
+		return {vars = {center.ability.extra.chips,center.ability.extra.chip_mod}}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.cardarea == G.jokers then
+			if context.beat_boss and esCiegaQueActiva() then
+                card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chip_mod
+				return {
+                    message = localize('k_upgrade_ex'),
+                    card = card,
+                    colour = G.C.CHIPS
+                }
+			end
+		end
+		if context.joker_main and context.cardarea == G.jokers then
+			return{
+				message = localize{type = 'variable', key = 'a_chips', vars = {card.ability.extra.chips}}, 
+				colour = G.C.CHIPS,
+				chip_mod = card.ability.extra.chips
+			}
+		end
+	end,
+	in_pool = function(self)
+        return true
+    end,
+}
+
+--ignora eso
+--SMODS.Joker{
+--	key = 'aspiradora',
+--	cost = 6,
+--	rarity = 2,
+--	blueprint_compat = true,
+--	eternal_compat = true,
+--	perishable_compat = true,
+--	atlas = 'Jokers',
+--	pos = {x=2,y=0},
+--	config = {extra = {extra=1}},
+--	loc_vars = function(self,info_queue,center)
+--		return {vars = {center.ability.extra, localize(G.GAME.noelle.pizza_suit, 'suits_singular'), colours = {G.C.SUITS[G.GAME.noelle.pizza_suit]}}}
+--	end,
+--	calculate = function(self,card,context)
+--		local comodin_selecc = nil
+--		if context.end_of_round and G.GAME.blind.boss then
+--			if context.cardarea == G.jokers then
+--				if #G.jokers.cards > 0 then
+--					local comodines = {}
+--					for k, v in pairs(G.jokers.cards) do
+--						if not v.gone and v ~= card and (v.ability.eternal or v.ability.perishable or v.ability.rental) then
+--							table.insert(comodines,v)
+--						end
+--					end
+--					if #comodines > 0 then
+--						comodin_selecc = pseudorandom_element(comodines, pseudoseed('aspiradora'))
+--						if comodin_selecc.ability.eternal or 0 then
+--							comodin_selecc:set_eternal(false)
+--						else
+--							if comodin_selecc.ability.perishable or 0 then
+--								comodin_selecc:set_perishable(false)
+--							end
+--						end
+--						if comodin_selecc.ability.rental or 0 then
+--							comodin_selecc:set_rental(false)
+--						end
+--						if not comodin_selecc.edition then
+--							local edicion = poll_edition('aspirado', nil, false, true)
+--							comodin_selecc:set_edition(edicion,true)
+--						end
+--					end
+--				end
+--			end
+--		end
+--	end,
+--	in_pool = function(self)
+--        return false
+--    end,
+--}
 
 ----------------------------------------------
 ------------MOD CODE END----------------------

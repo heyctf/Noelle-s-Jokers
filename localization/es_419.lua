@@ -28,7 +28,7 @@ return {
 				name = "Pizza 4 sabores",
 				text = {
 					"Reactiva una vez todas las cartas",
-					"del palo {V:1}#2#{} jugadas",
+					"del palo {V:1}#1#{} jugadas",
 					"El palo cambia cada ronda"
 				}
 			},
@@ -40,6 +40,26 @@ return {
 					"y le agrega una edición"
 				}
 			},
+			j_noelle_pintor = {
+				name = "El pintor",
+				text = {
+					"Pinta todas las cartas jugadas",
+					"al palo con más cartas en tu baraja",
+					"si juegas una {C:attention}escalera",
+					"{C:inactive,s:0.8}(Todas las escaleras se",
+					"{C:inactive,s:0.8}considerarán escaleras corridas)",
+					"Palo actual: {V:1}#1#"
+				}
+			},
+			j_noelle_robocop = {
+				name = "El vigilante",
+				text = {
+					"Obtiene {C:chips}+#2#{} cuando",
+					"derrotas una {C:attention}ciega jefe{}",
+					"sin activar su habilidad",
+					"{C:inactive}(Actual {C:chips}+#1#{C:inactive} fichas)",
+				}
+			}
 		},
         Other={},
         Planet={},
@@ -55,7 +75,9 @@ return {
         blind_states={},
         challenge_names={},
         collabs={},
-        dictionary={},
+        dictionary={
+			random_suit = "Al azar"
+		},
         high_scores={},
         labels={},
         poker_hand_descriptions={},
