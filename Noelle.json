@@ -1,0 +1,20 @@
+{
+	"id": "NOELLESJOKERS",
+	"name": "Noelle's Jokers",
+	"author": ["heyctf"],
+	"description": "Mod basado en las adiciones creadas por Noelle_owo_, arte creado por MorbZeno.",
+	"prefix": "noelle",
+	"main_file": "main.lua",
+	"priority": -1,
+	"badge_colour": "FFB6C1",
+	"badge_text_colour": "FFFFFF",
+    "display_name": "Noelle's Jokers",
+	"version": "1.2",
+	"dependencies": [
+			"Steamodded (>=1.0.0~BETA-0827c)",
+      "Lovely (>=0.7)"
+	],
+  "conflicts": [],
+	"provides": [],
+	"dump_loc": false 
+}

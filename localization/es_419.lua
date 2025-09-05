@@ -54,15 +54,34 @@ return {
 			j_noelle_robocop = {
 				name = "El vigilante",
 				text = {
-					"Obtiene {C:chips}+#2#{} cuando",
+					"Obtiene {C:chips}+#2#{} fichas cuando",
 					"derrotas una {C:attention}ciega jefe{}",
 					"sin activar su habilidad",
 					"{C:inactive}(Actual {C:chips}+#1#{C:inactive} fichas)",
 				}
+			},
+			j_noelle_gata_parca = {
+				name = "Gata parca",
+				text = {
+					"Evita la muerte #1# veces si",
+					"las fichas obtenidas son al menos",
+					"el {C:attention}80%{} de lo requerido",
+					"Se {S:1.1,C:red,E:2}autodestruye{} cuando",
+					"no le quedan {S:1.1,C:red,E:2}vidas}{}"
+				}
 			}
 		},
         Other={},
-        Planet={},
+        Planet={
+			c_noelle_nuevo = {
+				name = "Noelle boba",
+				text = {
+					"Sube de nivel a la mano",
+					"seleccionada si tiene",
+					"{C:attention}3 o más{} palos distintos",
+				}
+			}
+		},
         Spectral={},
         Stake={},
         Tag={},

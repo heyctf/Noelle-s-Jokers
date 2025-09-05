@@ -1,15 +1,13 @@
---- STEAMODDED HEADER
---- MOD_NAME: Noelle's Jokers
---- MOD_ID: NOELLESJOKERS
---- MOD_AUTHOR: [heyctf]
---- MOD_DESCRIPTION: Mod basado en las adiciones creadas por Noelle_owo_, arte creado por MorbZeno
---- PREFIX: noelle
-----------------------------------------------
-------------MOD CODE -------------------------
-
 SMODS.Atlas{
 	key = 'Jokers',
 	path = 'Jokers.png',
+	px = 71,
+	py = 95
+}
+
+SMODS.Atlas{
+	key = 'Planets',
+	path = 'Planets.png',
 	px = 71,
 	py = 95
 }
@@ -35,7 +33,7 @@ SMODS.Atlas{
 	py = 18
 }
 
---local palo_tostado = SMODS.Suit{
+--SMODS.Suit{
 --	key = 'Prehistoria',
 --	card_key = 'PREHISTORIA',
 --	pos = {y=0},
@@ -43,8 +41,68 @@ SMODS.Atlas{
 --    lc_atlas = 'lc_cards',
 --    lc_ui_atlas = 'lc_ui',
 --	lc_colour = HEX('67A347'),
---	in_pool = false
+--	in_pool = 
 --}
+
+function reset_pizza_palo()
+	if not G.GAME.noelle then G.GAME.noelle = {} end
+	G.GAME.noelle.pizza_suit = 'Spades'
+    local cartas_validas = {}
+	if G.STAGE == G.STAGES.RUN then
+		for k, v in ipairs(G.playing_cards) do
+			if v.ability.effect ~= 'Stone Card' then
+				cartas_validas[#cartas_validas+1] = v
+			end
+		end
+		if cartas_validas[1] then 
+			local carta = pseudorandom_element(cartas_validas, pseudoseed('pizza'..G.GAME.round_resets.ante))
+			G.GAME.noelle.pizza_suit = carta.base.suit
+		end
+	end
+end
+
+--creo que empezaré a poner comentarios
+--fiorela es una boba
+--tú tambien
+function cargar_mayorpalo()
+	if not G.GAME.noelle then G.GAME.noelle = {} end
+	G.GAME.noelle.mayorpalo = 'Random'
+	local empatePalos = false
+	local maxPalo = nil
+	local maxCant = 0
+    local tabla_palos = {}
+	if G.STAGE == G.STAGES.RUN then
+		for k, v in ipairs(G.playing_cards) do
+			local palo = v.base.suit
+			tabla_palos[palo] = (tabla_palos[palo] or 0) + 1 --usa el palo para sumar la cantidad y lo crea sino... lua es curioso
+			if tabla_palos[palo] > maxCant then
+				maxCant = tabla_palos[palo]
+				maxPalo = palo
+				empatePalos = false
+			--este tipo de problemas recuerdo hacer mucho en fundamentos de progra
+			--pero estoy muy acostumbrado a c++
+			elseif palo ~= maxPalo and tabla_palos[palo] == maxCant then --por que es ~= ... grr // aca se chequea si otro palo tiene la misma cantidad que el max actual
+				empatePalos = true
+			end
+		end
+		
+		if empatePalos then
+			G.GAME.noelle.mayorpalo = 'Random'
+		else
+			G.GAME.noelle.mayorpalo = maxPalo
+		end
+	end
+end
+
+function esCiegaQueActiva()
+	local tabla_ciegas = {"The Window","The Head","The Club","The Goad","The Plant","The Pillar","The Flint","The Eye","The Mouth","The Psychic","The Arm","The Ox","Verdant Leaf"}
+	for k, v in ipairs(tabla_ciegas) do
+		if v == G.GAME.blind.name then
+			return true
+		end
+	end
+end
+
 
 SMODS.Joker{
 	key = 'gato_negro',
@@ -196,23 +254,6 @@ SMODS.Joker{
     end,
 }
 
-function reset_pizza_palo()
-	if not G.GAME.noelle then G.GAME.noelle = {} end
-	G.GAME.noelle.pizza_suit = 'Spades'
-    local cartas_validas = {}
-	if G.STAGE == G.STAGES.RUN then
-		for k, v in ipairs(G.playing_cards) do
-			if v.ability.effect ~= 'Stone Card' then
-				cartas_validas[#cartas_validas+1] = v
-			end
-		end
-		if cartas_validas[1] then 
-			local carta = pseudorandom_element(cartas_validas, pseudoseed('pizza'..G.GAME.round_resets.ante))
-			G.GAME.noelle.pizza_suit = carta.base.suit
-		end
-	end
-end
-
 SMODS.Joker{
 	key = 'pizza_4_sabores',
 	cost = 6,
@@ -250,38 +291,6 @@ SMODS.Joker{
     end,
 }
 
---creo que empezaré a poner comentarios
---fiorela es una boba
---tú tambien
-function cargar_mayorpalo()
-	if not G.GAME.noelle then G.GAME.noelle = {} end
-	G.GAME.noelle.mayorpalo = 'Random'
-	local empatePalos = false
-	local maxPalo = nil
-	local maxCant = 0
-    local tabla_palos = {}
-	if G.STAGE == G.STAGES.RUN then
-		for k, v in ipairs(G.playing_cards) do
-			local palo = v.base.suit
-			tabla_palos[palo] = (tabla_palos[palo] or 0) + 1 --usa el palo para sumar la cantidad y lo crea sino... lua es curioso
-			if tabla_palos[palo] > maxCant then
-				maxCant = tabla_palos[palo]
-				maxPalo = palo
-				empatePalos = false
-			--este tipo de problemas recuerdo hacer mucho en fundamentos de progra
-			--pero estoy muy acostumbrado a c++
-			elseif palo ~= maxPalo and tabla_palos[palo] == maxCant then --por que es ~= ... grr // aca se chequea si otro palo tiene la misma cantidad que el max actual
-				empatePalos = true
-			end
-		end
-		
-		if empatePalos then
-			G.GAME.noelle.mayorpalo = 'Random'
-		else
-			G.GAME.noelle.mayorpalo = maxPalo
-		end
-	end
-end
 
 --me gusta mucho la idea de este comodín :p
 
@@ -354,15 +363,6 @@ SMODS.Joker{
     end,
 }
 
-function esCiegaQueActiva()
-	local tabla_ciegas = {"The Window","The Head","The Club","The Goad","The Plant","The Pillar","The Flint","The Eye","The Mouth","The Psychic","The Arm","The Ox","Verdant Leaf"}
-	for k, v in ipairs(tabla_ciegas) do
-		if v == G.GAME.blind.name then
-			return true
-		end
-	end
-end
-
 SMODS.Joker{
 	key = 'robocop',
 	cost = 6,
@@ -372,7 +372,7 @@ SMODS.Joker{
 	perishable_compat = true,
 	atlas = 'Jokers',
 	pos = {x=4,y=0},
-	config = {extra = {chips = 20, chip_mod = 50}},
+	config = {extra = {chips = 20, chip_mod = 25}},
 	loc_vars = function(self,info_queue,center)
 		return {vars = {center.ability.extra.chips,center.ability.extra.chip_mod}}
 	end,
@@ -399,6 +399,45 @@ SMODS.Joker{
         return true
     end,
 }
+
+--SMODS.Joker{
+--	key = 'gata_parca',
+--	cost = 6,
+--	rarity = 2,
+--	blueprint_compat = false,
+--	eternal_compat = true,
+--	perishable_compat = false,
+--	atlas = 'Jokers',
+--	pos = {x=5,y=0},
+--	config = {extra = {vidas=9,x_mult_mod=0.25,x_mult=1}},
+--	loc_vars = function(self,info_queue,center)
+--		return {vars = {center.ability.extra.vidas,center.ability.extra.x_mult_mod,center.ability.extra.x_mult}}
+--	end,
+--	calculate = function(self,card,context)
+--		if context.end_of_round and not context.blueprint then
+--			if context.game_over and 
+--			G.GAME.chips/G.GAME.blind.chips >= 0.8 then
+--				G.E_MANAGER:add_event(Event({
+--					func = function()
+--						G.hand_text_area.blind_chips:juice_up()
+--						G.hand_text_area.game_chips:juice_up()
+--						play_sound('tarot1')
+--						card.ability.extra.vidas = card.ability.extra.vidas - 1
+--						return true
+--					end
+--				}))
+--				return {
+--					message = localize('k_saved_ex'),
+--					saved = true,
+--					colour = G.C.RED
+--				}
+--				if card.ability.extra.vidas <= 0 then
+--					card:start_dissolve()
+--				end
+--			end
+--		end
+--	end
+--}
 
 --ignora eso
 --SMODS.Joker{
@@ -451,5 +490,48 @@ SMODS.Joker{
 --    end,
 --}
 
-----------------------------------------------
-------------MOD CODE END----------------------
+--Consumibles
+
+--nuevos "Planetas" pronto
+--SMODS.Consumable{
+--	key = 'nuevo',
+--	set = 'Planet',
+--	atlas = 'Planets',
+--	pos = {x=0,y=0},
+--	config = {},
+--	unlocked = true,
+--	discovered = false,
+--	cost = 3,
+--	can_use = function(self, card)
+--		if (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and card.area == G.consumeables then
+--			return false
+--		end
+--		if (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and card.area ~= G.consumeables then
+--			return true
+--		end
+--		if G.hand and G.hand.highlighted and #G.hand.highlighted > 0 then
+--			return true
+--		end
+--		return false
+--	end,
+--	keep_on_use = function(self, card)
+--		if G.STATE == G.STATES.PLANET_PACK then
+--			return true
+--		end
+--		return false
+--	end,
+--	use = function(self, card, area, copier)
+--		if G.hand and G.hand.highlighted and #G.hand.highlighted > 0 then
+--			local text,disp_text,poker_hands,scoring_hand,non_loc_disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
+--			level_up_hand(card, text)
+--			G.E_MANAGER:add_event(Event({
+--				trigger = 'after',
+--				delay = 0.3,
+--				func = function()
+--					G.hand:unhighlight_all(); return true
+--				end
+--			}))
+--			update_hand_text({nopulse = true, delay = 0.3}, {mult = 0, chips = 0, level = '', handname = ''})
+--		end
+--	end
+--}
