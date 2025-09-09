@@ -131,9 +131,7 @@ SMODS.Joker{
 		
 		if context.joker_main and card.ability.extra.chips > 0 then
 			return {
-				message = localize{type = 'variable', key = 'a_chips', vars = {card.ability.extra.chips}}, 
-				colour = G.C.CHIPS,
-				chip_mod = card.ability.extra.chips
+				chips = card.ability.extra.chips
 			}
 		end
 	end,
@@ -336,24 +334,30 @@ SMODS.Joker{
 		if context.cardarea == G.jokers and not context.blueprint then
 			if context.before and next(context.poker_hands['Straight']) then
 				if context.scoring_hand then
-					delay(0.02)
-					local paloACambiar = nil
-					if (G.GAME.noelle.mayorpalo == 'Random') then
-						local cartas_validas = {}
-						for k, v in ipairs(G.playing_cards) do
-							if v.ability.effect ~= 'Stone Card' then --nota para yo del futuro: qué pasa si solo tienes una carta de piedra?
-								cartas_validas[#cartas_validas+1] = v
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.3,
+						func = function()
+							local paloACambiar = nil
+							if (G.GAME.noelle.mayorpalo == 'Random') then
+								local cartas_validas = {}
+								for k, v in ipairs(G.playing_cards) do
+									if v.ability.effect ~= 'Stone Card' then --nota para yo del futuro: qué pasa si solo tienes una carta de piedra?
+										cartas_validas[#cartas_validas+1] = v
+									end
+								end
+								local carta = pseudorandom_element(cartas_validas, pseudoseed('pintor'..G.GAME.round_resets.ante))
+								paloACambiar = carta.base.suit
+							else
+								paloACambiar = G.GAME.noelle.mayorpalo
 							end
+							for k, v in pairs(context.scoring_hand) do
+								v:juice_up(0.4, 0.5)
+								v:change_suit(paloACambiar)
+							end
+							return true
 						end
-						local carta = pseudorandom_element(cartas_validas, pseudoseed('pintor'..G.GAME.round_resets.ante))
-						paloACambiar = carta.base.suit
-					else
-						paloACambiar = G.GAME.noelle.mayorpalo
-					end
-					for k, v in pairs(context.scoring_hand) do
-						v:juice_up(0.3, 0.5)
-						v:change_suit(paloACambiar)
-					end
+					}))
 				end
 			end
 		end
@@ -389,9 +393,7 @@ SMODS.Joker{
 		end
 		if context.joker_main and context.cardarea == G.jokers then
 			return{
-				message = localize{type = 'variable', key = 'a_chips', vars = {card.ability.extra.chips}}, 
-				colour = G.C.CHIPS,
-				chip_mod = card.ability.extra.chips
+				chips = card.ability.extra.chips
 			}
 		end
 	end,
@@ -400,44 +402,49 @@ SMODS.Joker{
     end,
 }
 
---SMODS.Joker{
---	key = 'gata_parca',
---	cost = 6,
---	rarity = 2,
---	blueprint_compat = false,
---	eternal_compat = true,
---	perishable_compat = false,
---	atlas = 'Jokers',
---	pos = {x=5,y=0},
---	config = {extra = {vidas=9,x_mult_mod=0.25,x_mult=1}},
---	loc_vars = function(self,info_queue,center)
---		return {vars = {center.ability.extra.vidas,center.ability.extra.x_mult_mod,center.ability.extra.x_mult}}
---	end,
---	calculate = function(self,card,context)
---		if context.end_of_round and not context.blueprint then
---			if context.game_over and 
---			G.GAME.chips/G.GAME.blind.chips >= 0.8 then
---				G.E_MANAGER:add_event(Event({
---					func = function()
---						G.hand_text_area.blind_chips:juice_up()
---						G.hand_text_area.game_chips:juice_up()
---						play_sound('tarot1')
---						card.ability.extra.vidas = card.ability.extra.vidas - 1
---						return true
---					end
---				}))
---				return {
---					message = localize('k_saved_ex'),
---					saved = true,
---					colour = G.C.RED
---				}
---				if card.ability.extra.vidas <= 0 then
---					card:start_dissolve()
---				end
---			end
---		end
---	end
---}
+SMODS.Joker{
+	key = 'gata_parca',
+	cost = 6,
+	rarity = 2,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = false,
+	atlas = 'Jokers',
+	pos = {x=5,y=0},
+	config = {extra = {vidas=9,x_mult_mod=0.25,x_mult=1}},
+	loc_vars = function(self,info_queue,center)
+		return {vars = {center.ability.extra.vidas,center.ability.extra.x_mult_mod,center.ability.extra.x_mult}}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main and context.cardarea == G.jokers and card.ability.extra.x_mult > 1 then
+			return{
+				x_mult = card.ability.extra.x_mult
+			}
+		end
+		if context.end_of_round and not context.blueprint then
+			if context.game_over and G.GAME.chips/G.GAME.blind.chips >= 0.8 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						G.hand_text_area.blind_chips:juice_up()
+						G.hand_text_area.game_chips:juice_up()
+						play_sound('tarot1')
+						card.ability.extra.x_mult = card.ability.extra.x_mult + card.ability.extra.x_mult_mod
+						card.ability.extra.vidas = card.ability.extra.vidas - 1
+						if card.ability.extra.vidas <= 0 then
+							card:start_dissolve()
+						end
+						return true
+					end
+				}))
+				return {
+					message = localize('k_saved_ex'),
+					saved = true,
+					colour = G.C.RED
+				}
+			end
+		end
+	end
+}
 
 --ignora eso
 --SMODS.Joker{

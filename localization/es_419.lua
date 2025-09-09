@@ -63,11 +63,13 @@ return {
 			j_noelle_gata_parca = {
 				name = "Gata parca",
 				text = {
-					"Evita la muerte #1# veces si",
-					"las fichas obtenidas son al menos",
-					"el {C:attention}80%{} de lo requerido",
+					"Evita la muerte {C:attention}#1# veces{} si las",
+					"fichas obtenidas son al menos",
+					"el {C:attention}80%{} de lo requerido y",
+					"obtiene {X:mult,C:white}X#2#{} multi",
 					"Se {S:1.1,C:red,E:2}autodestruye{} cuando",
-					"no le quedan {S:1.1,C:red,E:2}vidas}{}"
+					"no le quedan {S:1.1,C:red,E:2}vidas{}",
+					"{C:inactive}(Actual {X:mult,C:white}X#3#{C:inactive} multi)"
 				}
 			}
 		},
@@ -95,7 +97,8 @@ return {
         challenge_names={},
         collabs={},
         dictionary={
-			random_suit = "Al azar"
+			random_suit = "Al azar",
+			ph_mr_bones= "Te salvó un comodín"
 		},
         high_scores={},
         labels={},
