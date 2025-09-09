@@ -44,6 +44,17 @@ SMODS.Atlas{
 --	in_pool = 
 --}
 
+--SMODS.Suit{
+--	key = 'Tecnologica',
+--	card_key = 'TECNOLOGICA',
+--	pos = {y=1},
+--	ui_pos = {x=0,y=0},
+--    lc_atlas = 'lc_cards',
+--    lc_ui_atlas = 'lc_ui',
+--	lc_colour = HEX('7A9BFF'),
+--	in_pool = 
+--}
+
 function reset_pizza_palo()
 	if not G.GAME.noelle then G.GAME.noelle = {} end
 	G.GAME.noelle.pizza_suit = 'Spades'

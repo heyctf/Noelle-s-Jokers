@@ -108,9 +108,11 @@ return {
         ranks={},
         suits_plural={
 			noelle_Prehistoria = "La Prehistoria",
+			noelle_Tecnologica = "La Tecnología",
 		},
         suits_singular={
 			noelle_Prehistoria = "Prehistórico",
+			noelle_Tecnologica = "Tecnológico",
 		},
         tutorial={},
         v_dictionary={},
