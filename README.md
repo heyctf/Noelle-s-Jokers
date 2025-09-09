@@ -5,4 +5,5 @@ Necesitarás la versión 1.0.0-beta-0827c de Steamodded (https://github.com/Stea
 También es mi primer mod, si encuentras un error o crasheo puedes hablarme en Twitter (@heyctf)
 
 En el apartado de releases no necesariamente están las últimas versiones del mod, solo son lanzamientos funcionales.
-Si quieres probar la (literalmente) última versión que subo al mod, dale a Code y Download Zip
+Si quieres probar la (literalmente) última versión que subo al mod, dale a Code y Download Zip.
+Pero si tienes dudas, aquí siempre diré si la versión es la más actualizada: Sí xd.
