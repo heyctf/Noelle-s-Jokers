@@ -29,7 +29,7 @@ return {
 				text = {
 					"Reactiva una vez todas las cartas",
 					"del palo {V:1}#1#{} jugadas",
-					"El palo cambia cada ronda,"
+					"El palo cambia cada ronda,",
 					"pero puede repetirse"
 				}
 			},
