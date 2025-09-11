@@ -142,6 +142,7 @@ SMODS.Joker{
 	atlas = 'Jokers',
 	pos = {x=0,y=0},
 	config = {extra = {chips = 0, chip_mod = 5, plus_odds = 2}},
+	enhancement_gate = 'm_lucky',
 	loc_vars = function(self,info_queue,center)
 		return {vars = {center.ability.extra.chips, center.ability.extra.chip_mod}}
 	end,
