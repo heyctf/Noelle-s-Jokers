@@ -10,7 +10,7 @@ return {
 				text = {
 					"Todas las {C:green,E:1,S:1.1}probabilidades",
 					"empeoran: {C:green}1 en 2{C:inactive} -> {C:green}1 en 4{C:inactive}",
-					"Cada que una carta de la {C:attention}suerte{}",
+					"Cada que una carta {C:attention}de la suerte{}",
 					"no se active, obtiene {C:chips}+#2#{} fichas",
 					"{C:inactive}(Actual {C:chips}+#1#{} {C:inactive}fichas)"
 				}
@@ -75,9 +75,13 @@ return {
 			j_noelle_dentista = {
 				name = "Dentista",
 				text = {
-					"Obtiene {C:red}+#2#{} multi por cada carta",
-					"sin {C:attention}mejora{}, {C:attention}edición{} y {C:attention}sello{} jugada",
-					"{C:inactive}(Actual {C:red}+#1#{C:inactive} multi)"
+                    "{C:chips}+#1#{} fichas por cada carta",
+                    "sin {C:attention}mejora{}, {C:attention}edición{} ni {C:attention}sello{}",
+					"en tu {C:attention}baraja completa{}",
+					"{C:chips}-#2#{} ficha por cada carta",
+					"con alguna de esas",
+					"{C:inactive}(Se ignoran las cartas de acero){}",
+                    "{C:inactive}(Actual {C:chips}+#3#{C:inactive} fichas)",
 				}
 			}
 		},
