@@ -44,16 +44,20 @@ SMODS.Atlas{
 --	in_pool = 
 --}
 
---SMODS.Suit{
---	key = 'Tecnologica',
---	card_key = 'TECNOLOGICA',
---	pos = {y=1},
---	ui_pos = {x=0,y=0},
---    lc_atlas = 'lc_cards',
---    lc_ui_atlas = 'lc_ui',
---	lc_colour = HEX('7A9BFF'),
---	in_pool = 
---}
+SMODS.Suit{
+	key = 'Tecnologica',
+	card_key = 'TECNOLOGICA',
+	pos = {y=1},
+	ui_pos = {x=0,y=0},
+    lc_atlas = 'lc_cards',
+    lc_ui_atlas = 'lc_ui',
+	lc_colour = HEX('7A9BFF'),
+	in_pool = activar_palos
+}
+
+local function activar_palos(self, args)
+    return false
+end
 
 function reset_pizza_palo()
 	if not G.GAME.noelle then G.GAME.noelle = {} end
@@ -454,8 +458,37 @@ SMODS.Joker{
 				}
 			end
 		end
-	end
+	end,
+	in_pool = function(self)
+        return true
+    end,
 }
+
+--SMODS.Joker{
+--	key = 'dentista',
+--	cost = 5,
+--	rarity = 1,
+--	blueprint_compat = true,
+--	eternal_compat = true,
+--	perishable_compat = true,
+--	atlas = 'Jokers',
+--	pos = {x=0,y=1},
+--	config = {extra = {mult = 0, mult_mod = 2}},
+--	loc_vars = function(self,info_queue,center)
+--		return {vars = {center.ability.extra.mult,center.ability.extra.mult_mod}}
+--	end,
+--	calculate = function(self,card,context)
+--			
+--	end
+--}
+--
+--local getchipref = Card.get_chip_bonus
+--function Card:get_chip_bonus()
+--    if self.base.suit == 'noelle_Tecnologica' then
+--		return 10 --self.base.nominal + self.ability.bonus + self.ability.bonus + (self.ability.perma_bonus or 0)
+--	end
+--    return getchipref(self)
+--end
 
 --ignora eso
 --SMODS.Joker{
