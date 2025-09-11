@@ -3,7 +3,14 @@ return {
         Back={},
         Blind={},
         Edition={},
-        Enhanced={},
+        Enhanced={
+			m_noelle_adicional_primitiva = {
+				name = "Carta adicional primitiva",
+				text = {
+					"{C:chips}+#1#{} fichas extra",
+				}
+			}
+		},
         Joker={
 			j_noelle_gato_negro = {
 				name = "Gato negro",

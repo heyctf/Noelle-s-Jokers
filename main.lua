@@ -33,16 +33,25 @@ SMODS.Atlas{
 	py = 18
 }
 
---SMODS.Suit{
---	key = 'Prehistoria',
---	card_key = 'PREHISTORIA',
---	pos = {y=0},
---	ui_pos = {x=0,y=0},
---    lc_atlas = 'lc_cards',
---    lc_ui_atlas = 'lc_ui',
---	lc_colour = HEX('67A347'),
---	in_pool = 
---}
+SMODS.Atlas{
+	key = 'enhancers',
+	path = 'Enhancers.png',
+	px = 71,
+	py = 95
+}
+
+SMODS.Suit{
+	key = 'Prehistoria',
+	card_key = 'PREHISTORIA',
+	pos = {y=0},
+	ui_pos = {x=0,y=0},
+    lc_atlas = 'lc_cards',
+    lc_ui_atlas = 'lc_ui',
+	lc_colour = HEX('67A347'),
+	in_pool = function(self, args)
+		return false
+	end
+}
 
 SMODS.Suit{
 	key = 'Tecnologica',
@@ -57,7 +66,22 @@ SMODS.Suit{
 	end
 }
 
+local m_noelle_adicional_primitiva = SMODS.Enhancement{
+	key = 'adicional_primitiva',
+	atlas = 'enhancers',
+	pos = {x=0,y=0},
+	config = {
+		bonus = 90,
+	},
+	loc_vars = function(self,info_queue,center)
+		return {vars = {center.ability.bonus}}
+	end,
+	in_pool = function(self, args)
+		return false
+	end
+}
 
+G.P_CENTERS['m_noelle_adicional_primitiva'] = m_noelle_adicional_primitiva
 
 function reset_pizza_palo()
 	if not G.GAME.noelle then G.GAME.noelle = {} end
@@ -508,6 +532,53 @@ SMODS.Joker{
         return true
     end,
 }
+
+local set_ability = Card.set_ability
+function Card:set_ability(center, initial, delay_sprites)
+	local old_center = self.config.center
+	if center.name == 'Bonus' and self.base then
+		if self.base.suit == 'noelle_Prehistoria' then
+			center = G.P_CENTERS['m_noelle_adicional_primitiva']
+		end
+	end
+	set_ability(self, center, initial, delay_sprites)
+	if not initial and G.STATE ~= G.STATES.SMODS_BOOSTER_OPENED and G.STATE ~= G.STATES.SHOP and not G.SETTINGS.paused or G.TAROT_INTERRUPT then
+		SMODS.calculate_context({setting_ability = true, old = old_center.key, new = self.config.center_key, other_card = self, unchanged = old_center.key == self.config.center.key})
+	end
+end
+
+--local setabilityog = Card.set_ability
+--function Card:set_ability(center, initial, delay_sprites)
+--	if (G.STAGE == G.STAGES.RUN) then
+--		if center.name == 'Bonus' and self.base.suit == 'noelle_Prehistoria' then
+--			center = G.P_CENTERS['m_noelle_adicional_primitiva']
+--		end
+--		self.config.center = center
+--		if self.ability then
+--			self.ability.bonus = 40
+--		end
+--	end
+--	return setabilityog(self,center, initial, delay_sprites)
+--end
+
+
+--local usarconsumibleog = Card.use_consumeable
+--function Card:use_consumeable()
+--	if self.ability.consumeable.mod_conv or self.ability.consumeable.suit_conv then
+--		if self.ability.name == 'The Hierophant' then
+--			local mejora = nil
+--			for i=1, #G.hand.highlighted do
+--				if G.hand.highlighted[i].base.suit == 'noelle_Prehistoria' then
+--					mejora = m_noelle_adicional_primitiva
+--				else
+--					mejora = G.P_CENTERS[self.ability.consumeable.mod_conv]
+--				end
+--				G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function() G.hand.highlighted[i]:set_ability(mejora);return true end }))
+--			end 
+--		end
+--	end
+--	return usarconsumibleog(self,area, copier)
+--end
 
 --local getchipref = Card.get_chip_bonus
 --function Card:get_chip_bonus()
