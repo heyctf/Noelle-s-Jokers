@@ -52,12 +52,12 @@ SMODS.Suit{
     lc_atlas = 'lc_cards',
     lc_ui_atlas = 'lc_ui',
 	lc_colour = HEX('7A9BFF'),
-	in_pool = activar_palos
+	in_pool = function(self, args)
+		return false
+	end
 }
 
-local function activar_palos(self, args)
-    return false
-end
+
 
 function reset_pizza_palo()
 	if not G.GAME.noelle then G.GAME.noelle = {} end
