@@ -397,7 +397,7 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.end_of_round and context.cardarea == G.jokers then
-			if context.beat_boss and esCiegaQueActiva() then
+			if context.beat_boss and esCiegaQueActiva() and not context.blueprint then
                 card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chip_mod
 				return {
                     message = localize('k_upgrade_ex'),
@@ -423,7 +423,7 @@ SMODS.Joker{
 	rarity = 2,
 	blueprint_compat = false,
 	eternal_compat = true,
-	perishable_compat = false,
+	perishable_compat = true,
 	atlas = 'Jokers',
 	pos = {x=5,y=0},
 	config = {extra = {vidas=9,x_mult_mod=0.25,x_mult=1}},
