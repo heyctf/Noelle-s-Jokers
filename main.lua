@@ -404,7 +404,7 @@ SMODS.Joker{
 	perishable_compat = true,
 	atlas = 'Jokers',
 	pos = {x=4,y=0},
-	config = {extra = {chips = 20, chip_mod = 25}},
+	config = {extra = {chips = 20, chip_mod = 50}},
 	loc_vars = function(self,info_queue,center)
 		return {vars = {center.ability.extra.chips,center.ability.extra.chip_mod}}
 	end,
@@ -434,8 +434,8 @@ SMODS.Joker{
 	key = 'gata_parca',
 	cost = 6,
 	rarity = 2,
-	blueprint_compat = false,
-	eternal_compat = true,
+	blueprint_compat = true,
+	eternal_compat = false,
 	perishable_compat = true,
 	atlas = 'Jokers',
 	pos = {x=5,y=0},
