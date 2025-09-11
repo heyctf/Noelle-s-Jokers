@@ -71,6 +71,14 @@ return {
 					"no le quedan {S:1.1,C:red,E:2}vidas{}",
 					"{C:inactive}(Actual {X:mult,C:white}X#3#{C:inactive} multi)"
 				}
+			},
+			j_noelle_dentista = {
+				name = "Dentista",
+				text = {
+					"Obtiene {C:red}+#2#{} multi por cada carta",
+					"sin {C:attention}mejora{}, {C:attention}edición{} y {C:attention}sello{} jugada",
+					"{C:inactive}(Actual {C:red}+#1#{C:inactive} multi)"
+				}
 			}
 		},
         Other={},

@@ -464,24 +464,46 @@ SMODS.Joker{
     end,
 }
 
---SMODS.Joker{
---	key = 'dentista',
---	cost = 5,
---	rarity = 1,
---	blueprint_compat = true,
---	eternal_compat = true,
---	perishable_compat = true,
---	atlas = 'Jokers',
---	pos = {x=0,y=1},
---	config = {extra = {mult = 0, mult_mod = 2}},
---	loc_vars = function(self,info_queue,center)
---		return {vars = {center.ability.extra.mult,center.ability.extra.mult_mod}}
---	end,
---	calculate = function(self,card,context)
---			
---	end
---}
---
+SMODS.Joker{
+	key = 'dentista',
+	cost = 5,
+	rarity = 1,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = 'Jokers',
+	pos = {x=0,y=1},
+	config = {extra = {mult = 0, mult_mod = 2}},
+	loc_vars = function(self,info_queue,center)
+		return {vars = {center.ability.extra.mult,center.ability.extra.mult_mod}}
+	end,
+	calculate = function(self,card,context)
+		if context.cardarea == G.jokers then
+			if context.before then
+				local cantBasicas = 0
+				for k, v in ipairs(context.scoring_hand) do
+					if v.config.center == G.P_CENTERS.c_base and not v.seal and not v.edition and not v.debuff then
+						cantBasicas = cantBasicas + 1
+					end
+				end
+				card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod*cantBasicas
+				if (cantBasicas > 0) then
+					return {
+						message = localize('k_upgrade_ex'),
+						card = card,
+						colour = G.C.MULT
+					}
+				end
+			end
+		end
+		if context.joker_main and context.cardarea == G.jokers then
+			return{
+				mult = card.ability.extra.mult
+			}
+		end
+	end
+}
+
 --local getchipref = Card.get_chip_bonus
 --function Card:get_chip_bonus()
 --    if self.base.suit == 'noelle_Tecnologica' then
