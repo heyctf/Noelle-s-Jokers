@@ -6,4 +6,4 @@ También es mi primer mod, si encuentras un error o crasheo puedes hablarme en T
 
 En el apartado de releases no necesariamente están las últimas versiones del mod, solo son lanzamientos funcionales.
 Si quieres probar la (literalmente) última versión que subo al mod, dale a Code y Download Zip.
-Pero si tienes dudas, aquí siempre diré si la versión de la release es la más actualizada: No xd.
+Pero si tienes dudas, aquí siempre diré si la versión de la release es la más actualizada: Sí xd.
