@@ -9,6 +9,21 @@ return {
 				text = {
 					"{C:chips}+#1#{} fichas extra",
 				}
+			},
+			m_noelle_multi_primitiva = {
+				name = "Carta multi primitiva",
+				text = {
+					"{C:mult}+#1#{} multi",
+				}
+			},
+			m_noelle_suerte_primitiva = {
+				name = "Carta de la suerte primitiva",
+				text = {
+					"{C:green}#3# en 5{} probabilidades",
+					"de {C:mult}+#1#{} multi",
+					"{C:green}#3# en 15{} probabilidades",
+					"de ganar {C:money}#2#$",
+				}
 			}
 		},
         Joker={
