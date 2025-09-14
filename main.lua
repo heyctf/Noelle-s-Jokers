@@ -235,12 +235,15 @@ SMODS.Joker{
 	atlas = 'Jokers',
 	pos = {x=1,y=0},
 	config = {extra = {mano_par=false,descartada_par=false}},
+	--Voy a mejorar esto en la próxima release
 	update = function(self,card,dt)
-		for i = 1, (G.jokers and G.jokers.cards and #G.jokers.cards or 0) do
-			if G.jokers.cards[i].ability.name == 'Ice Cream' then G.jokers.cards[i].ability.extra.chip_mod = 2.5 end
-			if G.jokers.cards[i].ability.name == 'Popcorn' then G.jokers.cards[i].ability.extra = 2 end
-			if G.jokers.cards[i].ability.name == 'Turtle Bean' then G.jokers.cards[i].ability.extra.h_mod = 0.5 end
-			if G.jokers.cards[i].key == soda_mermelada then G.jokers.cards[i].ability.extra.rondas_mod = 0.5 end 
+		if not card.ability.name == 'Blueprint' then
+			for i = 1, (G.jokers and G.jokers.cards and #G.jokers.cards or 0) do
+				if G.jokers.cards[i].ability.name == 'Ice Cream' then G.jokers.cards[i].ability.extra.chip_mod = 2.5 end
+				if G.jokers.cards[i].ability.name == 'Popcorn' then G.jokers.cards[i].ability.extra = 2 end
+				if G.jokers.cards[i].ability.name == 'Turtle Bean' then G.jokers.cards[i].ability.extra.h_mod = 0.5 end
+				if G.jokers.cards[i].key == j_noelle_soda_mermelada then G.jokers.cards[i].ability.extra.rondas_mod = 0.5 end 
+			end
 		end
 	end,
 	calculate = function(self,card,context)
@@ -297,16 +300,21 @@ SMODS.Joker{
 		end
 		if context.end_of_round and context.blueprint and context.cardarea == G.jokers then
 			local activado = false
-			for k, v in ipairs(G.jokers.cards) do
-				if v.ability.name == 'Popcorn' then
-					v.ability.mult = v.ability.mult + v.ability.extra
+			for i = 1, (G.jokers and G.jokers.cards and #G.jokers.cards or 0) do
+				if G.jokers.cards[i].ability.name == 'Popcorn' then
+					G.jokers.cards[i].ability.mult = G.jokers.cards[i].ability.mult + G.jokers.cards[i].ability.extra
 				end
-				if v.ability.name == 'Turtle Bean' then
-					v.ability.extra.h_size = v.ability.extra.h_size + v.ability.extra.h_mod
+				if G.jokers.cards[i].ability.name == 'Turtle Bean' then
+					G.jokers.cards[i].ability.extra.h_size = G.jokers.cards[i].ability.extra.h_size + G.jokers.cards[i].ability.extra.h_mod
 				end
-				if v.ability.name == 'Popcorn' or v.ability.name == 'Turtle Bean' then
+				--if G.jokers.cards[i].key == j_noelle_soda_mermelada then
+				--	local v = G.jokers.cards[i]
+				--	v.config.extra.rondas = 18
+				--end
+				if G.jokers.cards[i].ability.name == 'Popcorn' or G.jokers.cards[i].ability.name == 'Turtle Bean' or G.jokers.cards[i].key == j_noelle_soda_mermelada then
 					activado = true
 				end
+
 			end
 			if activado then
 				return {
@@ -325,7 +333,7 @@ SMODS.Joker{
 			if v.ability.name == 'Popcorn' then v.ability.extra = 4 end
 			if v.ability.name == 'Ice Cream' then v.ability.extra.chip_mod = 5 end
 			if v.ability.name == 'Turtle Bean' then v.ability.extra.h_mod = 1 end
-			if v.key == soda_mermelada then v.ability.extra.rondas_mod = 1 end 
+			if v.key == j_noelle_soda_mermelada then v.ability.extra.rondas_mod = 1 end 
 		end
 	end,
 	in_pool = function(self)
@@ -572,7 +580,7 @@ SMODS.Joker{
 	pos = {x=1,y=1},
 	config = {extra = {rondas=6, rondas_mod=1}},
 	loc_vars = function(self,info_queue,center)
-		return {vars = {(center.ability.extra.rondas)*(1/(center.ability.extra.rondas_mod))}}
+		return {vars = {(center.ability.extra.rondas)/(center.ability.extra.rondas_mod)}}
 	end,
 	calculate = function(self,card,context)
         if context.cardarea == G.jokers then
@@ -623,7 +631,7 @@ SMODS.Joker{
 				else
 					card.ability.extra.rondas = card.ability.extra.rondas - card.ability.extra.rondas_mod
 					return {
-						message = card.ability.extra.rondas..'',
+						message = tostring((card.ability.extra.rondas)/(card.ability.extra.rondas_mod)),
 						colour = G.C.FILTER
 					}
 				end
