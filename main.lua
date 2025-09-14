@@ -70,6 +70,7 @@ local m_noelle_adicional_primitiva = SMODS.Enhancement{key='adicional_primitiva'
 local m_noelle_multi_primitiva = SMODS.Enhancement{key='multi_primitiva',atlas='enhancers',pos={x=1,y=0},config={mult=9},loc_vars=function(self,info_queue,center)return{vars={center.ability.mult}}end,in_pool=function(self,args)return false end}
 --local m_noelle_versatil_primitiva = SMODS.Enhancement{key='versatil_primitiva',atlas='enhancers',pos={x=2,y=0},config={mult=9},loc_vars=function(self,info_queue,center)return{vars={center.ability.mult}}end,in_pool=function(self,args)return false end}
 local m_noelle_suerte_primitiva = SMODS.Enhancement{key='suerte_primitiva',atlas='enhancers',pos={x=3,y=0},config={extra={mult=45,p_dollars=45}},loc_vars=function(self,info_queue,center)return{vars={center.ability.extra.mult,center.ability.extra.p_dollars,G.GAME.probabilities.normal}}end,
+ 
 calculate = function(self,card,context)
 	if context.main_scoring and context.cardarea == G.play then
 		local dinero = false
@@ -239,6 +240,7 @@ SMODS.Joker{
 			if G.jokers.cards[i].ability.name == 'Ice Cream' then G.jokers.cards[i].ability.extra.chip_mod = 2.5 end
 			if G.jokers.cards[i].ability.name == 'Popcorn' then G.jokers.cards[i].ability.extra = 2 end
 			if G.jokers.cards[i].ability.name == 'Turtle Bean' then G.jokers.cards[i].ability.extra.h_mod = 0.5 end
+			if G.jokers.cards[i].key == soda_mermelada then G.jokers.cards[i].ability.extra.rondas_mod = 0.5 end 
 		end
 	end,
 	calculate = function(self,card,context)
@@ -323,6 +325,7 @@ SMODS.Joker{
 			if v.ability.name == 'Popcorn' then v.ability.extra = 4 end
 			if v.ability.name == 'Ice Cream' then v.ability.extra.chip_mod = 5 end
 			if v.ability.name == 'Turtle Bean' then v.ability.extra.h_mod = 1 end
+			if v.key == soda_mermelada then v.ability.extra.rondas_mod = 1 end 
 		end
 	end,
 	in_pool = function(self)
@@ -551,6 +554,81 @@ SMODS.Joker{
 			return{
 				chips = card.ability.extra.chips
 			}
+		end
+	end,
+	in_pool = function(self)
+        return true
+    end,
+}
+
+SMODS.Joker{
+	key = 'soda_mermelada',
+	cost = 6,
+	rarity = 2,
+	blueprint_compat = false,
+	eternal_compat = false,
+	perishable_compat = false,
+	atlas = 'Jokers',
+	pos = {x=1,y=1},
+	config = {extra = {rondas=6, rondas_mod=1}},
+	loc_vars = function(self,info_queue,center)
+		return {vars = {(center.ability.extra.rondas)*(1/(center.ability.extra.rondas_mod))}}
+	end,
+	calculate = function(self,card,context)
+        if context.cardarea == G.jokers then
+			if context.before then
+				local numericas = {}
+				for k, v in ipairs(context.scoring_hand) do
+					if v.base.id < 11 then --11 es el id de las jotas
+						numericas[#numericas+1] = v
+						v:set_ability(G.P_CENTERS.m_mult, nil, true)
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								v:juice_up()
+								return true
+							end
+						})) 
+					end
+				end
+				if #numericas > 0 then 
+					return {
+						message = localize('k_spread_jam'),
+						colour = G.C.MULT,
+						card = card
+					}
+				end
+			end
+			if context.end_of_round then
+				if card.ability.extra.rondas - card.ability.extra.rondas_mod <= 0 then 
+					G.E_MANAGER:add_event(Event({
+						func = function()
+							play_sound('tarot1')
+							card.T.r = -0.2
+							card:juice_up(0.3, 0.4)
+							card.states.drag.is = true
+							card.children.center.pinch.x = true
+							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+								func = function()
+										G.jokers:remove_card(self)
+										card:remove()
+										card = nil
+									return true; end})) 
+							return true
+						end
+					})) 
+					return {
+						message = localize('k_nom_jam'),
+						colour = G.C.FILTER
+					}
+				else
+					card.ability.extra.rondas = card.ability.extra.rondas - card.ability.extra.rondas_mod
+					return {
+						message = card.ability.extra.rondas..'',
+						colour = G.C.FILTER
+					}
+				end
+
+			end
 		end
 	end,
 	in_pool = function(self)

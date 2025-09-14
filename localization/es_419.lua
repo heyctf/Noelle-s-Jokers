@@ -106,6 +106,14 @@ return {
 					"{C:inactive}(Se ignoran las cartas de acero){}",
                     "{C:inactive}(Actual {C:chips}+#3#{C:inactive} fichas)",
 				}
+			},
+			j_noelle_soda_mermelada = {
+				name = "Galleta con mermelada",
+				text = {
+					"Todas las cartas {C:attention}numeradas{} jugadas",
+					"se vuelven cartas {C:attention}multi",
+					"cuando anotan durante {C:attention}#1#{} rondas"
+				}
 			}
 		},
         Other={},
@@ -133,7 +141,9 @@ return {
         collabs={},
         dictionary={
 			random_suit = "Al azar",
-			ph_mr_bones= "Te salvó un comodín"
+			ph_mr_bones= "Te salvó un comodín",
+			k_spread_jam = "¡Mermelada!",
+			k_nom_jam = "¡Ñam!"
 		},
         high_scores={},
         labels={},
