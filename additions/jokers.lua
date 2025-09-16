@@ -82,10 +82,10 @@ SMODS.Joker{
 		end
     end,
 	add_to_deck = function(self, card, from_debuff)
-		G.GAME.perishable_rounds = 10
+		G.GAME.perishable_rounds = G.GAME.perishable_rounds*2
 	end,
 	remove_from_deck = function(self, card, from_debuff)
-		G.GAME.perishable_rounds = 5
+		G.GAME.perishable_rounds = G.GAME.perishable_rounds/2
 	end,
 	in_pool = function(self)
         return true
