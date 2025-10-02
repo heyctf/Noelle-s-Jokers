@@ -133,19 +133,34 @@ function Card:set_ability(center, initial, delay_sprites)
 	end
 end
 
---local setabilityog = Card.set_ability
---function Card:set_ability(center, initial, delay_sprites)
---	if (G.STAGE == G.STAGES.RUN) then
---		if center.name == 'Bonus' and self.base.suit == 'noelle_Prehistoria' then
---			center = G.P_CENTERS['m_noelle_adicional_primitiva']
---		end
---		self.config.center = center
---		if self.ability then
---			self.ability.bonus = 40
---		end
---	end
---	return setabilityog(self,center, initial, delay_sprites)
---end
+function aumentar_valor_venta(carta,cantidad)
+	G.E_MANAGER:add_event(Event({
+		trigger = 'after',
+		delay = 0.3,
+		func = function()
+		carta.ability.extra_value = carta.ability.extra_value + math.abs(cantidad)
+		carta:set_cost()
+		carta:juice_up(0.3, 0.4)
+		play_sound('coin1')
+		return true
+		end
+	}))
+end
+
+local ant_ease_dollars = ease_dollars
+function ease_dollars(mod, instant)
+	local dinero = ant_ease_dollars(mod, instant)
+	local huchas = SMODS.find_card('j_noelle_hucha',false)
+	local esPaquete = false
+	if G.STATE ~= 999 and G.STATE ~= G.STATES.SHOP then
+		if #huchas>0 and mod<0 then
+			for k, v in ipairs(huchas) do
+				aumentar_valor_venta(v,mod)
+			end
+		end
+	end
+end
+
 
 
 --local usarconsumibleog = Card.use_consumeable

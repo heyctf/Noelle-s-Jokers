@@ -2,7 +2,14 @@ return {
     descriptions = {
         Back={},
         Blind={},
-        Edition={},
+        Edition={
+			e_noelle_tostado = {
+				name = "Tostado",
+				text = {
+					"Se reactiva {C:attention}1{} vez",
+				}
+			}
+		},
         Enhanced={
 			m_noelle_adicional_primitiva = {
 				name = "Carta adicional primitiva",
@@ -114,6 +121,13 @@ return {
 					"se vuelven cartas {C:attention}multi",
 					"cuando anotan durante {C:attention}#1#{} rondas"
 				}
+			},
+			j_noelle_hucha = {
+				name = "La hucha",
+				text = {
+					"Obtiene el {C:money}${} perdido",
+					"como {C:attention}valor de venta",
+				}
 			}
 		},
         Other={},
@@ -143,10 +157,12 @@ return {
 			random_suit = "Al azar",
 			ph_mr_bones= "Te salvó un comodín",
 			k_spread_jam = "¡Mermelada!",
-			k_nom_jam = "¡Ñam!"
+			k_nom_jam = "¡Ñam!",
+		},
+        labels={
+			noelle_tostado = "Tostado",
 		},
         high_scores={},
-        labels={},
         poker_hand_descriptions={},
         poker_hands={},
         quips={},

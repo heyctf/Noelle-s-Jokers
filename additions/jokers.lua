@@ -83,6 +83,9 @@ SMODS.Joker{
     end,
 	add_to_deck = function(self, card, from_debuff)
 		G.GAME.perishable_rounds = G.GAME.perishable_rounds*2
+		if G.GAME.noelle.cantRefris == nil then
+			G.GAME.noelle.cantRefris = 1
+		end
 	end,
 	remove_from_deck = function(self, card, from_debuff)
 		G.GAME.perishable_rounds = G.GAME.perishable_rounds/2
@@ -404,6 +407,31 @@ SMODS.Joker{
 	in_pool = function(self)
         return true
     end,
+}
+
+SMODS.Joker{
+	key = 'hucha',
+	cost = 5,
+	rarity = 1,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = 'Jokers',
+	pos = {x=2,y=1},
+	in_pool = function(self)
+        return true
+    end,
+	calculate = function(self,card,context)
+		if context.using_consumeable then
+			local carta = context.consumeable
+			if carta.ability.name == "Wraith" then 
+				local dinero = G.GAME.dollars
+				aumentar_valor_venta(card,dinero)
+			end
+		end
+	end,
+	--Toda la lógica está en functions.lua, ya que modifiqué la función que agrega dinero
+	--Wraith es una excepción por ser un consumible
 }
 
 SMODS.Joker:take_ownership('popcorn',

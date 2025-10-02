@@ -1,3 +1,13 @@
+SMODS.current_mod.optional_features = {
+    retrigger_joker = true,
+    post_trigger = true,
+    quantum_enhancements = true,
+    cardareas = {
+        discard = true,
+        deck = true
+    }
+}
+
 SMODS.Atlas{
 	key = 'Jokers',
 	path = 'Jokers.png',
@@ -65,6 +75,55 @@ SMODS.Suit{
 		return false
 	end
 }
+
+SMODS.Edition{
+	key = 'tostado',
+	shader = 'tostado',
+	loc_vars = function(self, info_queue, card)
+		return {vars = {card.edition.seed},}
+	end,
+    on_apply = function (card)
+        card.edition.seed = (pseudorandom('tostado')*3)^(pseudorandom('tostado')*4)
+    end,
+	extra_cost = 4,
+	config = {retrigger=1},
+	calculate = function(self,card,context)
+		if context.retrigger_joker_check and context.other_card == card then
+			return {
+				message = localize('k_again_ex'),
+				repetitions = self.config.retrigger,
+				card = card
+			}
+		end
+	end,
+}
+
+SMODS.Shader{
+	key = 'tostado',
+	path = 'tostado.fs',
+	send_vars = function(sprite,card)
+		return {
+			seed = card and card.edition and card.edition.seed or 0
+		}
+	end,
+}
+
+--SMODS.Edition{
+--	key = 'nublado',
+--	shader = 'nublado',
+--	extra_cost = 2,
+--}
+
+--SMODS.Shader{
+--	key = 'nublado',
+--	path = 'nublado.fs',
+--	send_vars = function(sprite,card)
+--		return {
+--            scroll_speed = 0.2,
+--            overlay_tex = 
+--		}
+--	end,
+--}
 
 assert(SMODS.load_file('additions/jokers.lua'))()
 assert(SMODS.load_file('additions/functions.lua'))()
