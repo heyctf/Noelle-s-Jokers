@@ -422,7 +422,7 @@ SMODS.Joker{
         return true
     end,
 	calculate = function(self,card,context)
-		if context.using_consumeable then
+		if context.using_consumeable and G.STATE == 999 then
 			local carta = context.consumeable
 			if carta.ability.name == "Wraith" then 
 				local dinero = G.GAME.dollars
