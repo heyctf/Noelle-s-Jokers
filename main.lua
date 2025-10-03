@@ -54,7 +54,7 @@ SMODS.Suit{
 	key = 'Prehistoria',
 	card_key = 'PREHISTORIA',
 	pos = {y=0},
-	ui_pos = {x=0,y=0},
+	ui_pos = {x=1,y=0},
     lc_atlas = 'lc_cards',
     lc_ui_atlas = 'lc_ui',
 	lc_colour = HEX('67A347'),

@@ -437,6 +437,10 @@ SMODS.Joker{
 SMODS.Joker:take_ownership('popcorn',
     {
 	update = function(self,card,dt)
+		if not G.GAME.noelle then 
+			G.GAME.noelle = {}
+			G.GAME.noelle.cantRefris = 0
+		end
 		local cantMod = G.GAME.noelle.cantRefris
 		if cantMod then
 		if (G.GAME.noelle.cantRefris > 0 and not (cantMod==0 and #SMODS.find_card('j_noelle_refrigerador',false)>0)) then
@@ -450,7 +454,10 @@ SMODS.Joker:take_ownership('popcorn',
 SMODS.Joker:take_ownership('ice_cream',
     {
 	update = function(self,card,dt)
-		if not G.GAME.noelle then G.GAME.noelle = {} end
+		if not G.GAME.noelle then 
+			G.GAME.noelle = {}
+			G.GAME.noelle.cantRefris = 0
+		end
 		if (G.GAME.noelle.cantRefris) then
 			local cantMod = G.GAME.noelle.cantRefris
 			if cantMod then
@@ -470,6 +477,10 @@ SMODS.Joker:take_ownership('selzer',
 		return {vars = {center.ability.extra*(2^center.ability.refris_real)}}
 	end,
 	update = function(self,card,dt)
+		if not G.GAME.noelle then 
+			G.GAME.noelle = {}
+			G.GAME.noelle.cantRefris = 0
+		end
 		local cantMod = G.GAME.noelle.cantRefris
 		if cantMod then
 		if (G.GAME.noelle.cantRefris > 0 and not (cantMod==0 and #SMODS.find_card('j_noelle_refrigerador',false)>0)) then
@@ -521,7 +532,10 @@ SMODS.Joker:take_ownership('turtle_bean',
 		return {vars = {math.floor(center.ability.extra.h_size), center.ability.extra.h_mod}}
 	end,
 	update = function(self,card,dt)
-		if not G.GAME.noelle then G.GAME.noelle = {} end
+		if not G.GAME.noelle then 
+			G.GAME.noelle = {}
+			G.GAME.noelle.cantRefris = 0
+		end
 		if (G.GAME.noelle.cantRefris) then
 			local cantMod = G.GAME.noelle.cantRefris
 			if cantMod then
