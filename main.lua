@@ -108,6 +108,8 @@ SMODS.Shader{
 	end,
 }
 
+SMODS.Sound({key = "meow",path = "meow.ogg"}):register()
+
 --SMODS.Edition{
 --	key = 'nublado',
 --	shader = 'nublado',

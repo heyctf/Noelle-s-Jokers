@@ -128,6 +128,14 @@ return {
 					"Obtiene el {C:money}${} perdido",
 					"como {C:attention}valor de venta",
 				}
+			},
+			j_noelle_jackalatro = {
+				name = "Jack-alatro",
+				text = {
+					"Al usar un consumible hay",
+					"{C:green}1 en 4{} probabilidades de devolvértelo y",
+					"{C:green}1 en 4{} probabilidades de negar su efecto",
+				}
 			}
 		},
         Other={},

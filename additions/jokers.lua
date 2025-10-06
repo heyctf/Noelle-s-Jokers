@@ -282,6 +282,7 @@ SMODS.Joker{
 				return {
 					message = localize('k_saved_ex'),
 					saved = true,
+					play_sound('noelle_meow',0.5),
 					colour = G.C.RED
 				}
 			end
@@ -418,9 +419,6 @@ SMODS.Joker{
 	perishable_compat = true,
 	atlas = 'Jokers',
 	pos = {x=2,y=1},
-	in_pool = function(self)
-        return true
-    end,
 	calculate = function(self,card,context)
 		if context.using_consumeable and G.STATE == 999 then
 			local carta = context.consumeable
@@ -430,9 +428,30 @@ SMODS.Joker{
 			end
 		end
 	end,
+	in_pool = function(self)
+        return true
+    end,
 	--Toda la lógica está en functions.lua, ya que modifiqué la función que agrega dinero
 	--Wraith es una excepción por ser un consumible
 }
+
+--SMODS.Joker{
+--	key = 'jackalatro',
+--	cost = 6,
+--	rarity = 2,
+--	blueprint_compat = true,
+--	eternal_compat = true,
+--	perishable_compat = true,
+--	atlas = 'Jokers',
+--	pos = {x=3,y=1},
+--	calculate = function(self,card,context)
+--	end,
+--	in_pool = function(self)
+--        return false
+--    end,
+--	--Toda la lógica está en functions.lua, ya que modifiqué la función que agrega dinero
+--	--Wraith es una excepción por ser un consumible
+--}
 
 SMODS.Joker:take_ownership('popcorn',
     {
@@ -640,50 +659,4 @@ SMODS.Joker:take_ownership('turtle_bean',
 --	in_pool = function(self)
 --        return false
 --    end,
---}
-
---Consumibles
-
---nuevos "Planetas" pronto
---SMODS.Consumable{
---	key = 'nuevo',
---	set = 'Planet',
---	atlas = 'Planets',
---	pos = {x=0,y=0},
---	config = {},
---	unlocked = true,
---	discovered = false,
---	cost = 3,
---	can_use = function(self, card)
---		if (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and card.area == G.consumeables then
---			return false
---		end
---		if (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) and card.area ~= G.consumeables then
---			return true
---		end
---		if G.hand and G.hand.highlighted and #G.hand.highlighted > 0 then
---			return true
---		end
---		return false
---	end,
---	keep_on_use = function(self, card)
---		if G.STATE == G.STATES.PLANET_PACK then
---			return true
---		end
---		return false
---	end,
---	use = function(self, card, area, copier)
---		if G.hand and G.hand.highlighted and #G.hand.highlighted > 0 then
---			local text,disp_text,poker_hands,scoring_hand,non_loc_disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
---			level_up_hand(card, text)
---			G.E_MANAGER:add_event(Event({
---				trigger = 'after',
---				delay = 0.3,
---				func = function()
---					G.hand:unhighlight_all(); return true
---				end
---			}))
---			update_hand_text({nopulse = true, delay = 0.3}, {mult = 0, chips = 0, level = '', handname = ''})
---		end
---	end
 --}
