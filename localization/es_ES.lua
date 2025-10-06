@@ -50,7 +50,7 @@ return {
 					"Los comodines {C:attention}perecederos",
 					"y que {C:attention}decrecen con su uso",
 					"{C:inactive,s:0.8}(ej. Palomitas de maíz, Helado, etc.)",
-					"duran el {C:attention}doble #1#"
+					"duran el {C:attention}doble"
 				}
 			},
 			j_noelle_pizza_4_sabores = {
